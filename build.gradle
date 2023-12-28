@@ -1,0 +1,44 @@
+plugins {
+	id 'java'
+	id 'idea'
+	id 'org.springframework.boot' version '3.2.1'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+bootJar{
+	enabled = false
+}
+
+allprojects {
+	group = 'gradebook-be'
+	version = '0.0.1-SNAPSHOT'
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+}
+
+subprojects{
+	apply plugin: 'java-library'
+	apply plugin: 'idea'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'org.springframework.boot'
+
+	java.setSourceCompatibility(JavaVersion.VERSION_17)
+
+	test {
+		useJUnitPlatform()
+	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
