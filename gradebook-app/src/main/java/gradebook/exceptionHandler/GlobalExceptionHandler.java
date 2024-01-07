@@ -11,6 +11,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserException.class)
     ResponseEntity<Object> handleUserException(UserException ex){
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex, HttpStatus.NOT_FOUND);
     }
 }

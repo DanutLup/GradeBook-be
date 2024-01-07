@@ -6,20 +6,34 @@ import gradebook.repository.db.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService{
+    private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+
+    @Override
+    @Transactional
+    public void createUser(UserCreateRequestDto userCreateRequestDto){
+        verifyEmailExists(userCreateRequestDto);
+        verifyCnpExists(userCreateRequestDto);
+
+        if(userCreateRequestDto.getRole().equals(UserRoleDto.STUDENT)){
+            saveStudent(userCreateRequestDto);
+        }
+        else if(userCreateRequestDto.getRole().equals(UserRoleDto.TEACHER)){
+            saveTeacher(userCreateRequestDto);
+        }
+    }
 
     @Override
     public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto){
@@ -55,28 +69,40 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UsersPageResponseDto getTeachers(UsersPageRequestDto usersPageRequestDto){
+    public UsersPageResponseDto getUsers(UsersPageRequestDto usersPageRequestDto){
         Pageable pageable = PageRequest.of(usersPageRequestDto.getPageNumber(), usersPageRequestDto.getPageSize());
+
         if(usersPageRequestDto.getRole().equals(UserRoleDto.STUDENT)){
-            Page<StudentEntity> students = studentRepository.findAll(pageable);
-            StudentEntity student = StudentEntity.builder().email("test")
-                    .id(50)
-                    .role(UserRole.STUDENT)
-                    .firstName("test")
-                    .lastName("test")
-                    .password("password")
-                    .build();
-            studentRepository.deleteById(105);
-            Page<UserResponseDto> studentsResponse = students.map(UserServiceImpl::toUserResponseDto);
-            return UsersPageResponseDto.builder()
-                    .users(studentsResponse)
-                    .build();
+            return getStudentsPageResponseDto(pageable);
         }
-        Page<UserEntity> teachers = userRepository.findByRole(UserRole.valueOf(usersPageRequestDto.getRole().name()), pageable);
+        else if(usersPageRequestDto.getRole().equals(UserRoleDto.TEACHER)){
+            return getTeacherPageResponseDto(pageable);
+        }
+        return getUsersPageResponseDto(pageable);
+    }
+
+    private UsersPageResponseDto getUsersPageResponseDto(Pageable pageable) {
+        Page<UserEntity> users = userRepository.findAll(pageable);
+        Page<UserResponseDto> usersResponse = users.map(UserServiceImpl::toUserResponseDto);
+        return UsersPageResponseDto.builder()
+                .users(usersResponse)
+                .build();
+    }
+
+    private UsersPageResponseDto getTeacherPageResponseDto(Pageable pageable) {
+        Page<TeacherEntity> teachers = teacherRepository.findAll(pageable);
 
         Page<UserResponseDto> teachersResponse = teachers.map(UserServiceImpl::toUserResponseDto);
         return UsersPageResponseDto.builder()
                 .users(teachersResponse)
+                .build();
+    }
+
+    private UsersPageResponseDto getStudentsPageResponseDto(Pageable pageable) {
+        Page<StudentEntity> students = studentRepository.findAll(pageable);
+        Page<UserResponseDto> studentsResponse = students.map(UserServiceImpl::toUserResponseDto);
+        return UsersPageResponseDto.builder()
+                .users(studentsResponse)
                 .build();
     }
 
@@ -87,5 +113,46 @@ public class UserServiceImpl implements UserService{
                 .firstName(userEntity.getFirstName())
                 .email(userEntity.getEmail())
                 .build();
+    }
+
+    private void verifyCnpExists(UserCreateRequestDto userCreateRequestDto) {
+        Optional<UserEntity> userEntity = userRepository.findByCnp(userCreateRequestDto.getCnp());
+        if(userEntity.isPresent()){
+            throw new UserException(String.format("User with CNP: %s already exists", userCreateRequestDto.getCnp()));
+        }
+    }
+
+    private void verifyEmailExists(UserCreateRequestDto userCreateRequestDto) {
+        Optional<UserEntity> userEntity = userRepository.findByEmail(userCreateRequestDto.getEmail());
+        if(userEntity.isPresent()){
+            throw new UserException(String.format("User with email %s already exists!", userCreateRequestDto.getEmail()));
+        }
+    }
+
+    private void saveTeacher(UserCreateRequestDto userCreateRequestDto) {
+        TeacherEntity teacherEntity = TeacherEntity.builder()
+                .firstName(userCreateRequestDto.getFirstName())
+                .lastName(userCreateRequestDto.getLastName())
+                .email(userCreateRequestDto.getEmail())
+                .password(userCreateRequestDto.getCnp())
+                .role(UserRole.TEACHER)
+                .cnp(userCreateRequestDto.getCnp())
+                .build();
+
+        teacherRepository.save(teacherEntity);
+    }
+
+    private void saveStudent(UserCreateRequestDto userCreateRequestDto) {
+        StudentEntity studentEntity =
+                StudentEntity.builder()
+                        .firstName(userCreateRequestDto.getFirstName())
+                        .lastName(userCreateRequestDto.getLastName())
+                        .email(userCreateRequestDto.getEmail())
+                        .password(userCreateRequestDto.getCnp())
+                        .role(UserRole.STUDENT)
+                        .cnp(userCreateRequestDto.getCnp())
+                        .build();
+
+        studentRepository.save(studentEntity);
     }
 }

@@ -2,5 +2,5 @@ package gradebook.repository.db;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
+public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer> {
 }

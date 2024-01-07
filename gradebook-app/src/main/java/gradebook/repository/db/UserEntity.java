@@ -19,7 +19,8 @@ import java.util.Objects;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="user_generator", sequenceName="users_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_generator")
     @Column(name = "user_id")
     private int id;
 
@@ -34,6 +35,9 @@ public class UserEntity {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "cnp")
+    private String cnp;
 
     @Column(name = "user_role")
     @Enumerated(EnumType.STRING)

@@ -7,7 +7,6 @@ import org.hibernate.Hibernate;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "teachers")
@@ -18,7 +17,7 @@ import java.util.UUID;
 @SuperBuilder
 public class TeacherEntity extends UserEntity{
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Course> courses;
+    private List<CourseEntity> courses;
 
     @Column(name = "teacher_code")
     private String teacherCode;

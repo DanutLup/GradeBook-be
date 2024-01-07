@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Table(name = "enrollments")
 @Entity
@@ -26,7 +25,7 @@ public class Enrollment {
     private StudentEntity student;
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Course course;
+    private CourseEntity course;
 
     @Column(name = "grade")
     private int grade;
