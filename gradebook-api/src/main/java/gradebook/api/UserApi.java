@@ -20,4 +20,8 @@ public interface UserApi {
     @PostMapping("/get-users")
     @ResponseStatus(HttpStatus.OK)
     UsersPageResponseDto getUsers(@RequestBody UsersPageRequestDto usersPageRequestDto);
+
+    @PostMapping("/create-user")
+    @ResponseStatus(HttpStatus.OK)
+    void createUser(@RequestBody UserCreateRequestDto userCreateRequestDto);
 }

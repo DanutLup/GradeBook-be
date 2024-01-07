@@ -23,6 +23,11 @@ public class UserApiImpl implements UserApi {
 
     @Override
     public UsersPageResponseDto getUsers(UsersPageRequestDto usersPageRequestDto){
-        return userService.getTeachers(usersPageRequestDto);
+        return userService.getUsers(usersPageRequestDto);
+    }
+
+    @Override
+    public void createUser(UserCreateRequestDto userCreateRequestDto){
+        userService.createUser(userCreateRequestDto);
     }
 }

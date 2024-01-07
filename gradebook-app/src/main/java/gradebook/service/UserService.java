@@ -5,6 +5,6 @@ import gradebook.dto.*;
 public interface UserService {
     UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);
     UserStatisticsResponseDto getUserStatistics();
-
-    UsersPageResponseDto getTeachers(UsersPageRequestDto usersPageRequestDto);
+    UsersPageResponseDto getUsers(UsersPageRequestDto usersPageRequestDto);
+    void createUser(UserCreateRequestDto userCreateRequestDto);
 }
