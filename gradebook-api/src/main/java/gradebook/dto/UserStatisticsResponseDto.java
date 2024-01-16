@@ -13,4 +13,5 @@ public class UserStatisticsResponseDto {
 
     private int numberOfStudents;
     private int numberOfTeachers;
+    private int numberOfCourses;
 }

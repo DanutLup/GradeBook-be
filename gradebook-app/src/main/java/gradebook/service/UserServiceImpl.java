@@ -11,15 +11,34 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService{
+    private final EnrollmentRepository enrollmentRepository;
+    private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+
+    @Override
+    public void deleteUser(UserDeleteRequestDto userDeleteRequestDto){
+        if(userDeleteRequestDto.getRole().equals(UserRoleDto.TEACHER)){
+            TeacherEntity teacherEntity = teacherRepository.findById(userDeleteRequestDto.getUserId())
+                            .orElseThrow();
+            if(!teacherEntity.getCourses().isEmpty()){
+                throw new UserException("Please assign another teacher to the courses");
+            }
+            teacherRepository.deleteById(userDeleteRequestDto.getUserId());
+        }
+
+        else if(userDeleteRequestDto.getRole().equals(UserRoleDto.STUDENT)){
+            studentRepository.deleteById(userDeleteRequestDto.getUserId());
+        }
+    }
 
     @Override
     @Transactional
@@ -36,6 +55,65 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserResponseDto getUser(int userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow();
+        return toUserResponseDto(userEntity);
+    }
+
+    @Override
+    public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
+        UserEntity userEntity = userRepository.findById(userUpdateRequestDto.getId()).orElseThrow();
+
+        userEntity.setEmail(userUpdateRequestDto.getEmail());
+        userEntity.setFirstName(userUpdateRequestDto.getFirstName());
+        userEntity.setLastName(userUpdateRequestDto.getLastName());
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    @Transactional
+    public void createEnrollment(EnrollmentRequestDto enrollmentRequestDto) {
+        CourseEntity courseEntity = courseRepository.findById(enrollmentRequestDto.getCourseId())
+                .orElseThrow(() -> new UserException("Course not found"));
+        StudentEntity studentEntity = studentRepository.findById(enrollmentRequestDto.getStudentId())
+                .orElseThrow(() -> new UserException("Student not found"));
+        if(enrollmentRepository.findByStudentIdAndCourseId(studentEntity.getId(), courseEntity.getId()).isPresent()){
+            throw new UserException("The student is already enrolled to this course");
+        }
+
+        Enrollment enrollment = Enrollment.builder()
+                .date(LocalDate.now())
+                .course(courseEntity)
+                .student(studentEntity)
+                .build();
+
+        enrollmentRepository.saveAndFlush(enrollment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEnrollment(int studentId, int courseId) {
+        Enrollment enrollment = enrollmentRepository.findByStudentIdAndCourseId(studentId, courseId)
+                .orElseThrow(() -> new UserException("Enrollment not found"));
+
+        enrollmentRepository.delete(enrollment);
+    }
+
+    @Override
+    public void editGrade(EnrollmentRequestDto enrollmentRequestDto) {
+    Enrollment enrollment =
+        enrollmentRepository
+            .findByStudentIdAndCourseId(
+                enrollmentRequestDto.getStudentId(), enrollmentRequestDto.getCourseId())
+            .orElseThrow(() -> new UserException("Enrollment not found"));
+    if(enrollmentRequestDto.getGrade() < 1 || enrollmentRequestDto.getGrade() > 10){
+        throw new UserException("Please enter a value between 1 and 10");
+    }
+    enrollment.setGrade(enrollmentRequestDto.getGrade());
+        enrollmentRepository.save(enrollment);
+    }
+
+    @Override
     public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto){
         UserEntity userEntity = userRepository.findByEmail(userLoginRequestDto.getEmail())
                 .orElseThrow(() -> new UserException("User Not found"));
@@ -43,6 +121,7 @@ public class UserServiceImpl implements UserService{
             log.info("Login successful");
 
             return UserLoginResponseDto.builder()
+                    .id(userEntity.getId())
                     .email(userEntity.getEmail())
                     .role(UserRoleDto.valueOf(userEntity.getRole().name()))
                     .firstName(userEntity.getFirstName())
@@ -60,10 +139,12 @@ public class UserServiceImpl implements UserService{
         Pageable pageable = PageRequest.of(0, 200);
         int numberOfStudents = userRepository.findByRole(UserRole.STUDENT, pageable).getNumberOfElements();
         int numberOfTeachers = userRepository.findByRole(UserRole.TEACHER, pageable).getNumberOfElements();
+        int numberOfCourses = courseRepository.findAll().size();
 
         return UserStatisticsResponseDto.builder()
                 .numberOfStudents(numberOfStudents)
                 .numberOfTeachers(numberOfTeachers)
+                .numberOfCourses(numberOfCourses)
                 .build();
     }
 
@@ -112,6 +193,7 @@ public class UserServiceImpl implements UserService{
                 .lastName(userEntity.getLastName())
                 .firstName(userEntity.getFirstName())
                 .email(userEntity.getEmail())
+                .cnp(userEntity.getCnp())
                 .build();
     }
 
@@ -137,6 +219,7 @@ public class UserServiceImpl implements UserService{
                 .password(userCreateRequestDto.getCnp())
                 .role(UserRole.TEACHER)
                 .cnp(userCreateRequestDto.getCnp())
+                .password("password")
                 .build();
 
         teacherRepository.save(teacherEntity);
@@ -151,6 +234,7 @@ public class UserServiceImpl implements UserService{
                         .password(userCreateRequestDto.getCnp())
                         .role(UserRole.STUDENT)
                         .cnp(userCreateRequestDto.getCnp())
+                        .password("password")
                         .build();
 
         studentRepository.save(studentEntity);

@@ -30,4 +30,35 @@ public class UserApiImpl implements UserApi {
     public void createUser(UserCreateRequestDto userCreateRequestDto){
         userService.createUser(userCreateRequestDto);
     }
+
+    @Override
+    public void deleteUser(UserDeleteRequestDto userDeleteRequestDto){
+        userService.deleteUser(userDeleteRequestDto);
+    }
+
+    @Override
+    public UserResponseDto getUser(int userId){
+        return userService.getUser(userId);
+    }
+
+    @Override
+    public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
+        userService.updateUser(userUpdateRequestDto);
+
+    }
+
+    @Override
+    public void createEnrollment(EnrollmentRequestDto enrollmentRequestDto) {
+        userService.createEnrollment(enrollmentRequestDto);
+    }
+
+    @Override
+    public void deleteEnrollment(int studentId, int courseId) {
+        userService.deleteEnrollment(studentId, courseId);
+    }
+
+    @Override
+    public void editGrade(EnrollmentRequestDto enrollmentRequestDto) {
+        userService.editGrade(enrollmentRequestDto);
+    }
 }
