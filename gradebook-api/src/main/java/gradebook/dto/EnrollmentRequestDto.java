@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponseDto {
-    private int id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String cnp;
+public class EnrollmentRequestDto {
+    private int studentId;
+    private int courseId;
+    private int grade;
 }

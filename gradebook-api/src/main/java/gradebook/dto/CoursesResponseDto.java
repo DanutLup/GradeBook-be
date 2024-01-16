@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponseDto {
-    private int id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String cnp;
+public class CoursesResponseDto {
+    private List<CourseResponseDto> courses;
 }

@@ -16,7 +16,8 @@ import java.time.LocalDate;
 public class Enrollment {
     @Column(name = "enrollment_id")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="enrollment_generator", sequenceName="enrollments_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="enrollment_generator")
     private int id;
     @Column(name = "date")
     private LocalDate date;

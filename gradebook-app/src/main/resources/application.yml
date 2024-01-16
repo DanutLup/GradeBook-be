@@ -22,3 +22,7 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
