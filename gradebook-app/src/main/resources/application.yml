@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     password: root
     url: jdbc:postgresql://localhost:5432/gradebook_db
-    username: root
+    username: postgres
   jpa:
     hibernate:
       ddl-auto: validate

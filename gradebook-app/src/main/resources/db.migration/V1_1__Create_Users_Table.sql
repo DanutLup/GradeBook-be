@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS public;
+
 CREATE TABLE IF NOT EXISTS public.courses
 (
     course_id integer NOT NULL,
