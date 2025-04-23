@@ -1,8 +1,8 @@
 package gradebook.api;
 
-import gradebook.dto.CourseRequestDto;
-import gradebook.dto.CourseResponseDto;
-import gradebook.dto.CoursesResponseDto;
+import gradebook.dto.course.CourseRequestDto;
+import gradebook.dto.course.CourseResponseDto;
+import gradebook.dto.course.CoursesResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

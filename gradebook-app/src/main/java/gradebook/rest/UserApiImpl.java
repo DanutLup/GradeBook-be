@@ -1,8 +1,8 @@
 package gradebook.rest;
 
 import gradebook.api.UserApi;
-import gradebook.dto.*;
-import gradebook.service.UserService;
+import gradebook.dto.user.*;
+import gradebook.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 

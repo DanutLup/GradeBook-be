@@ -1,6 +1,6 @@
-package gradebook.service;
+package gradebook.service.user;
 
-import gradebook.dto.*;
+import gradebook.dto.user.*;
 
 public interface UserService {
     UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);

@@ -1,6 +1,5 @@
-package gradebook.dto;
+package gradebook.dto.user;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data

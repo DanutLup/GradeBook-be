@@ -1,5 +1,6 @@
 package gradebook.repository.db;
 
+import gradebook.repository.db.data.Enrollment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

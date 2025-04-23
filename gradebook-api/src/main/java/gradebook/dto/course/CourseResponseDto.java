@@ -1,5 +1,6 @@
-package gradebook.dto;
+package gradebook.dto.course;
 
+import gradebook.dto.user.StudentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

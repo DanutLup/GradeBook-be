@@ -1,4 +1,4 @@
-package gradebook.dto;
+package gradebook.dto.user;
 
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;

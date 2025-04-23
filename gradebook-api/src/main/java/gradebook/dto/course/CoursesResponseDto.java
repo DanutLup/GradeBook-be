@@ -1,17 +1,16 @@
-package gradebook.dto;
+package gradebook.dto.course;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserStatisticsResponseDto {
-
-    private int numberOfStudents;
-    private int numberOfTeachers;
-    private int numberOfCourses;
+public class CoursesResponseDto {
+    private List<CourseResponseDto> courses;
 }

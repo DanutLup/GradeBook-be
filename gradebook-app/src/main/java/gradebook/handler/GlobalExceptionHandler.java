@@ -1,4 +1,4 @@
-package gradebook.exceptionHandler;
+package gradebook.handler;
 
 import gradebook.exceptions.UserException;
 import org.springframework.http.HttpStatus;

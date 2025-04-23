@@ -1,6 +1,6 @@
 package gradebook.api;
 
-import gradebook.dto.*;
+import gradebook.dto.user.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

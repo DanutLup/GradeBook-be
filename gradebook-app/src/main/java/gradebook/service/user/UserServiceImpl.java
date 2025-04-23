@@ -1,8 +1,9 @@
-package gradebook.service;
+package gradebook.service.user;
 
-import gradebook.dto.*;
+import gradebook.dto.user.*;
 import gradebook.exceptions.UserException;
 import gradebook.repository.db.*;
+import gradebook.repository.db.data.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService{
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;

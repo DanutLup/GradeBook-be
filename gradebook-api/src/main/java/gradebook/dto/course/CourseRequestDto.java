@@ -1,4 +1,4 @@
-package gradebook.dto;
+package gradebook.dto.course;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

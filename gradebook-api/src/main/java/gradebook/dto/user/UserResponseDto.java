@@ -1,6 +1,5 @@
-package gradebook.dto;
+package gradebook.dto.user;
 
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserLoginResponseDto {
-
+public class UserResponseDto {
     private int id;
     private String email;
     private String firstName;
     private String lastName;
-    private UserRoleDto role;
+    private String cnp;
 }

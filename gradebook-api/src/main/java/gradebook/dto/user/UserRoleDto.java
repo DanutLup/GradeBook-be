@@ -1,4 +1,4 @@
-package gradebook.dto;
+package gradebook.dto.user;
 
 public enum UserRoleDto {
     STUDENT,

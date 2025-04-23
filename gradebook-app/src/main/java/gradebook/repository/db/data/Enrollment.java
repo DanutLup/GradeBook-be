@@ -1,4 +1,4 @@
-package gradebook.repository.db;
+package gradebook.repository.db.data;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,10 +1,10 @@
 package gradebook.rest;
 
 import gradebook.api.CourseApi;
-import gradebook.dto.CourseRequestDto;
-import gradebook.dto.CourseResponseDto;
-import gradebook.dto.CoursesResponseDto;
-import gradebook.service.CourseService;
+import gradebook.dto.course.CourseRequestDto;
+import gradebook.dto.course.CourseResponseDto;
+import gradebook.dto.course.CoursesResponseDto;
+import gradebook.service.course.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 

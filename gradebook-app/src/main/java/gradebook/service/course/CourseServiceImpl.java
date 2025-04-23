@@ -1,23 +1,32 @@
-package gradebook.service;
+package gradebook.service.course;
 
-import gradebook.dto.*;
+import gradebook.dto.course.CourseRequestDto;
+import gradebook.dto.course.CourseResponseDto;
+import gradebook.dto.course.CoursesResponseDto;
 import gradebook.exceptions.UserException;
 import gradebook.repository.db.*;
+import gradebook.repository.db.data.CourseEntity;
+import gradebook.repository.db.data.Enrollment;
+import gradebook.repository.db.data.StudentEntity;
+import gradebook.repository.db.data.TeacherEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static gradebook.service.course.CourseMapper.*;
 
 @Service
 @RequiredArgsConstructor
-public class CourseService {
+@Transactional(readOnly = true)
+public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
 
+    @Override
     public CoursesResponseDto getCoursesForTeacher(int id){
         TeacherEntity teacher = teacherRepository.findById(id).orElseThrow();
         List<CourseEntity> courses = teacher.getCourses();
@@ -25,6 +34,7 @@ public class CourseService {
         return getCoursesResponseDto(courses.stream().map(getCourseEntityCourseForTeacherResponseDto()));
     }
 
+    @Override
     public CoursesResponseDto getCoursesForStudent(int id) {
         StudentEntity student = studentRepository.findById(id).orElseThrow();
 
@@ -37,6 +47,7 @@ public class CourseService {
     }
 
     @Transactional
+    @Override
     public void createCourse(CourseRequestDto courseRequestDto){
         TeacherEntity teacher = teacherRepository.findById(courseRequestDto.getTeacherId())
                 .orElseThrow(() -> new UserException("teacher not found"));
@@ -48,39 +59,13 @@ public class CourseService {
         courseRepository.save(courseEntity);
     }
 
+    @Override
     public CoursesResponseDto getCourses() {
         List<CourseEntity> courses = courseRepository.findAll();
-        return getCoursesResponseDto(courses.stream().map(CourseService::getCourseResponseDto));
+        return getCoursesResponseDto(courses.stream().map(CourseMapper::getCourseResponseDto));
     }
 
-    private static CoursesResponseDto getCoursesResponseDto(Stream<CourseResponseDto> courses) {
-        return CoursesResponseDto.builder()
-                .courses(courses
-                        .toList())
-                .build();
-    }
-
-    private static Function<CourseEntity, CourseResponseDto> getCourseEntityCourseForTeacherResponseDto() {
-        return courseEntity -> CourseResponseDto.builder()
-                .credits(courseEntity.getCredits())
-                .name(courseEntity.getName())
-                .id(courseEntity.getId())
-                .build();
-    }
-
-    private static CourseResponseDto getCourseResponseDto(CourseEntity courseEntity) {
-        return CourseResponseDto.builder()
-                .id(courseEntity.getId())
-                .credits(courseEntity.getCredits())
-                .name(courseEntity.getName())
-                .teacher(getTeacherName(courseEntity))
-                .build();
-    }
-
-    private static String getTeacherName(CourseEntity courseEntity) {
-        return courseEntity.getTeacher().getFirstName() + " " + courseEntity.getTeacher().getLastName();
-    }
-
+    @Override
     public void updateCourse(CourseRequestDto courseRequestDto) {
     CourseEntity courseEntity =
         courseRepository
@@ -96,29 +81,27 @@ public class CourseService {
     courseRepository.save(courseEntity);
     }
 
+    @Override
     public void deleteCourse(int courseId) {
         CourseEntity courseEntity = courseRepository.findById(courseId).orElseThrow(() -> new UserException("Course not found"));
 
         courseRepository.delete(courseEntity);
     }
 
-    public CourseResponseDto getCourse(int id) {
-        CourseEntity courseEntity = courseRepository.findById(id)
-                .orElseThrow(() -> new UserException("Course not found"));
+  @Override
+  public CourseResponseDto getCourse(int id) {
+    CourseEntity courseEntity =
+        courseRepository.findById(id).orElseThrow(() -> new UserException("Course not found"));
 
-
-        CourseResponseDto courseResponseDto = getCourseResponseDto(courseEntity);
-        List<StudentEntity> students = courseEntity.getEnrollments().stream()
-                .map(Enrollment::getStudent).toList();
-        courseResponseDto.setStudents(students.stream().map(studentEntity -> StudentResponseDto.builder()
-                .id(studentEntity.getId())
-                .email(studentEntity.getEmail())
-                .firstName(studentEntity.getFirstName())
-                .lastName(studentEntity.getLastName())
-                .grade(studentEntity.getEnrollments().stream()
-                        .filter(enrollment -> enrollment.getCourse().equals(courseEntity))
-                        .findFirst().orElseThrow(() -> new UserException("enrollment not found")).getGrade())
-                .build()).toList());
-        return courseResponseDto;
+    CourseResponseDto courseResponseDto = getCourseResponseDto(courseEntity);
+    List<StudentEntity> students =
+        courseEntity.getEnrollments().stream().map(Enrollment::getStudent).toList();
+    courseResponseDto.setStudents(
+        students.stream()
+            .map(
+                studentEntity ->
+                        getStudentResponseDto(studentEntity, courseEntity))
+            .toList());
+    return courseResponseDto;
     }
 }
