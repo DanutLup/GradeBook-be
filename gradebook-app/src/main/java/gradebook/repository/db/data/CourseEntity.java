@@ -26,7 +26,7 @@ public class CourseEntity {
     private int credits;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Enrollment> enrollments;
+    private List<EnrollmentEntity> enrollmentEntities;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")

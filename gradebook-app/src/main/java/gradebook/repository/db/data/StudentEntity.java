@@ -16,7 +16,7 @@ import java.util.List;
 public class StudentEntity extends UserEntity{
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Enrollment> enrollments;
+    private List<EnrollmentEntity> enrollmentEntities;
 
     @Column(name = "student_code")
     private String studentCode;

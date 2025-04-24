@@ -6,7 +6,7 @@ import gradebook.dto.course.CoursesResponseDto;
 import gradebook.exceptions.UserException;
 import gradebook.repository.db.*;
 import gradebook.repository.db.data.CourseEntity;
-import gradebook.repository.db.data.Enrollment;
+import gradebook.repository.db.data.EnrollmentEntity;
 import gradebook.repository.db.data.StudentEntity;
 import gradebook.repository.db.data.TeacherEntity;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class CourseServiceImpl implements CourseService {
     public CoursesResponseDto getCoursesForStudent(int id) {
         StudentEntity student = studentRepository.findById(id).orElseThrow();
 
-        Stream<CourseResponseDto> coursesStream = student.getEnrollments().stream().map(enrollment -> {
+        Stream<CourseResponseDto> coursesStream = student.getEnrollmentEntities().stream().map(enrollment -> {
             CourseResponseDto courseResponseDto = getCourseResponseDto(enrollment.getCourse());
             courseResponseDto.setGrade(enrollment.getGrade());
             return courseResponseDto;
@@ -95,7 +95,7 @@ public class CourseServiceImpl implements CourseService {
 
     CourseResponseDto courseResponseDto = getCourseResponseDto(courseEntity);
     List<StudentEntity> students =
-        courseEntity.getEnrollments().stream().map(Enrollment::getStudent).toList();
+        courseEntity.getEnrollmentEntities().stream().map(EnrollmentEntity::getStudent).toList();
     courseResponseDto.setStudents(
         students.stream()
             .map(

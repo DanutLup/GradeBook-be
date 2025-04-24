@@ -83,27 +83,27 @@ public class UserServiceImpl implements UserService{
             throw new UserException("The student is already enrolled to this course");
         }
 
-        Enrollment enrollment = Enrollment.builder()
+        EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
                 .date(LocalDate.now())
                 .course(courseEntity)
                 .student(studentEntity)
                 .build();
 
-        enrollmentRepository.saveAndFlush(enrollment);
+        enrollmentRepository.saveAndFlush(enrollmentEntity);
     }
 
     @Override
     @Transactional
     public void deleteEnrollment(int studentId, int courseId) {
-        Enrollment enrollment = enrollmentRepository.findByStudentIdAndCourseId(studentId, courseId)
+        EnrollmentEntity enrollmentEntity = enrollmentRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new UserException("Enrollment not found"));
 
-        enrollmentRepository.delete(enrollment);
+        enrollmentRepository.delete(enrollmentEntity);
     }
 
     @Override
     public void editGrade(EnrollmentRequestDto enrollmentRequestDto) {
-    Enrollment enrollment =
+    EnrollmentEntity enrollmentEntity =
         enrollmentRepository
             .findByStudentIdAndCourseId(
                 enrollmentRequestDto.getStudentId(), enrollmentRequestDto.getCourseId())
@@ -111,8 +111,8 @@ public class UserServiceImpl implements UserService{
     if(enrollmentRequestDto.getGrade() < 1 || enrollmentRequestDto.getGrade() > 10){
         throw new UserException("Please enter a value between 1 and 10");
     }
-    enrollment.setGrade(enrollmentRequestDto.getGrade());
-        enrollmentRepository.save(enrollment);
+    enrollmentEntity.setGrade(enrollmentRequestDto.getGrade());
+        enrollmentRepository.save(enrollmentEntity);
     }
 
     @Override

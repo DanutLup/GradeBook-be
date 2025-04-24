@@ -49,7 +49,7 @@ public class CourseMapper {
                 .firstName(studentEntity.getFirstName())
                 .lastName(studentEntity.getLastName())
                 .grade(
-                        studentEntity.getEnrollments().stream()
+                        studentEntity.getEnrollmentEntities().stream()
                                 .filter(enrollment -> enrollment.getCourse().equals(courseEntity))
                                 .findFirst()
                                 .orElseThrow(() -> new UserException("enrollment not found"))
