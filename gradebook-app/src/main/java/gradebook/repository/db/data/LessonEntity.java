@@ -29,6 +29,9 @@ public class LessonEntity {
   @Column(name = "content")
   private String content;
 
+  @Column(name = "title")
+  private String title;
+
   @Column(name = "created")
   private Date created;
 

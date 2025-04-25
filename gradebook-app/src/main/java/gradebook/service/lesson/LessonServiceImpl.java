@@ -2,6 +2,7 @@ package gradebook.service.lesson;
 
 import gradebook.dto.request.lesson.CreateLessonRequestDto;
 import gradebook.dto.request.lesson.UpdateLessonRequestDto;
+import gradebook.dto.response.lesson.LessonResponseDto;
 import gradebook.exception.LessonNotFoundException;
 import gradebook.exception.TeacherUnauthorizedException;
 import gradebook.exception.UserNotFoundException;
@@ -11,6 +12,7 @@ import gradebook.repository.db.TeacherRepository;
 import gradebook.repository.db.data.CourseEntity;
 import gradebook.repository.db.data.LessonEntity;
 import gradebook.repository.db.data.TeacherEntity;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,19 +27,15 @@ public class LessonServiceImpl implements LessonService {
   @Override
   @Transactional
   public void createLesson(CreateLessonRequestDto createLessonRequestDto) {
-    TeacherEntity teacherEntity =
-        teacherRepository
-            .findById(createLessonRequestDto.getTeacherId())
-            .orElseThrow(() -> new UserNotFoundException("Teacher not found"));
-    if (!isTeacherOwnerOfTheCourse(createLessonRequestDto.getCourseId(), teacherEntity)) {
-      throw new TeacherUnauthorizedException("Teacher is not owner of this course");
-    }
+    validateTeachersRights(createLessonRequestDto);
+
     LessonEntity lessonEntity = LessonMapper.mapToLessonEntity(createLessonRequestDto);
     CourseEntity course =
         courseRepository
             .findById(createLessonRequestDto.getCourseId())
             .orElseThrow(() -> new LessonNotFoundException("Course not found"));
     lessonEntity.setCourse(course);
+
     lessonRepository.saveAndFlush(lessonEntity);
   }
 
@@ -50,12 +48,37 @@ public class LessonServiceImpl implements LessonService {
             .findById(updateLessonRequestDto.getCourseId())
             .orElseThrow(() -> new LessonNotFoundException("Course not found"));
     lessonEntity.setCourse(course);
+
     lessonRepository.saveAndFlush(lessonEntity);
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public List<LessonResponseDto> getLessons(Integer courseId) {
+    List<LessonEntity> lessons = lessonRepository.findByCourseId(courseId);
+
+    return LessonMapper.mapToLessonsResponse(lessons);
+  }
+
+  @Override
+  @Transactional
+  public void deleteLesson(Integer lessonId) {
+    lessonRepository.deleteById(lessonId);
   }
 
   private boolean isTeacherOwnerOfTheCourse(Integer requestCourseId, TeacherEntity teacherEntity) {
     return teacherEntity.getCourses().stream()
         .map(CourseEntity::getId)
         .anyMatch(courseId -> courseId.equals(requestCourseId));
+  }
+
+  private void validateTeachersRights(CreateLessonRequestDto createLessonRequestDto) {
+    TeacherEntity teacherEntity =
+        teacherRepository
+            .findById(createLessonRequestDto.getTeacherId())
+            .orElseThrow(() -> new UserNotFoundException("Teacher not found"));
+    if (!isTeacherOwnerOfTheCourse(createLessonRequestDto.getCourseId(), teacherEntity)) {
+      throw new TeacherUnauthorizedException("Teacher is not owner of this course");
+    }
   }
 }
