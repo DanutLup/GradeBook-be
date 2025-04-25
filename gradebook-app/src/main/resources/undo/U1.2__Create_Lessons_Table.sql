@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS lessons;
+DROP SEQUENCE IF EXISTS lessons_seq;

@@ -1,0 +1,31 @@
+import com.diffplug.gradle.spotless.SpotlessPlugin
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.17.0"
+    }
+}
+
+subprojects {
+    apply plugin: SpotlessPlugin
+
+    spotless {
+        java {
+            target fileTree('.'){
+                include '**/*.java'
+                exclude '**/build/**', '**/build-*/**'
+            }
+            importOrder()
+            removeUnusedImports()
+            googleJavaFormat()
+            trimTrailingWhitespace()
+            formatAnnotations()
+        }
+    }
+
+    compileJava.dependsOn spotlessApply
+}

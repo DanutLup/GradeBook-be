@@ -1,10 +1,9 @@
 package gradebook.repository.db.data;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -13,12 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class StudentEntity extends UserEntity{
+public class StudentEntity extends UserEntity {
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EnrollmentEntity> enrollmentEntities;
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<EnrollmentEntity> enrollmentEntities;
 
-    @Column(name = "student_code")
-    private String studentCode;
-
+  @Column(name = "student_code")
+  private String studentCode;
 }

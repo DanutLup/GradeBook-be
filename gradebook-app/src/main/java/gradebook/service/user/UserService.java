@@ -1,23 +1,29 @@
 package gradebook.service.user;
 
-import gradebook.dto.user.*;
+import gradebook.dto.request.user.*;
+import gradebook.dto.response.user.UserLoginResponseDto;
+import gradebook.dto.response.user.UserResponseDto;
+import gradebook.dto.response.user.UserStatisticsResponseDto;
+import gradebook.dto.response.user.UsersPageResponseDto;
 
 public interface UserService {
-    UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);
-    UserStatisticsResponseDto getUserStatistics();
-    UsersPageResponseDto getUsers(UsersPageRequestDto usersPageRequestDto);
+  UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);
 
-    void deleteUser(UserDeleteRequestDto userDeleteRequestDto);
+  UserStatisticsResponseDto getUserStatistics();
 
-    void createUser(UserCreateRequestDto userCreateRequestDto);
+  UsersPageResponseDto getUsers(UsersPageRequestDto usersPageRequestDto);
 
-    UserResponseDto getUser(int userId);
+  void deleteUser(UserDeleteRequestDto userDeleteRequestDto);
 
-    void updateUser(UserUpdateRequestDto userUpdateRequestDto);
+  void createUser(UserCreateRequestDto userCreateRequestDto);
 
-    void createEnrollment(EnrollmentRequestDto enrollmentRequestDto);
+  UserResponseDto getUser(int userId);
 
-    void deleteEnrollment(int studentId, int courseId);
+  void updateUser(UserUpdateRequestDto userUpdateRequestDto);
 
-    void editGrade(EnrollmentRequestDto enrollmentRequestDto);
+  void createEnrollment(EnrollmentRequestDto enrollmentRequestDto);
+
+  void deleteEnrollment(int studentId, int courseId);
+
+  void editGrade(EnrollmentRequestDto enrollmentRequestDto);
 }
