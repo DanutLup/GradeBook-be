@@ -4,6 +4,8 @@ spring:
     password: root
     url: jdbc:postgresql://localhost:5432/gradebook_db
     username: postgres
+    hikari:
+      schema: public
   jpa:
     hibernate:
       ddl-auto: validate

@@ -1,6 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS public;
-
-CREATE TABLE IF NOT EXISTS public.courses
+CREATE TABLE IF NOT EXISTS courses
 (
     course_id integer NOT NULL,
     credits integer NOT NULL,
@@ -11,7 +9,7 @@ CREATE TABLE IF NOT EXISTS public.courses
 
 CREATE SEQUENCE IF NOT EXISTS courses_seq;
 
-CREATE TABLE IF NOT EXISTS public.enrollments
+CREATE TABLE IF NOT EXISTS enrollments
 (
     course_id integer NOT NULL,
     date date,
@@ -23,14 +21,14 @@ CREATE TABLE IF NOT EXISTS public.enrollments
 
 CREATE SEQUENCE IF NOT EXISTS enrollments_seq;
 
-CREATE TABLE IF NOT EXISTS public.students
+CREATE TABLE IF NOT EXISTS students
 (
     user_id integer NOT NULL,
     student_code character varying(255),
     CONSTRAINT students_pkey PRIMARY KEY (user_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.teachers
+CREATE TABLE IF NOT EXISTS teachers
 (
     user_id integer NOT NULL,
     teacher_code character varying(255),
@@ -39,7 +37,7 @@ CREATE TABLE IF NOT EXISTS public.teachers
 
 CREATE SEQUENCE IF NOT EXISTS users_seq;
 
-CREATE TABLE IF NOT EXISTS public.users
+CREATE TABLE IF NOT EXISTS users
 (
     user_id integer NOT NULL,
     email character varying(255) NOT NULL UNIQUE,
