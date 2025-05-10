@@ -4,6 +4,7 @@ import gradebook.dto.request.lesson.CreateLessonRequestDto;
 import gradebook.dto.request.lesson.UpdateLessonRequestDto;
 import gradebook.dto.response.lesson.LessonResponseDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ public interface LessonApi {
   @ResponseStatus(HttpStatus.CREATED)
   void createLesson(@Valid @RequestBody CreateLessonRequestDto createLessonRequestDto);
 
-  @PutMapping(LESSON_API_V1)
+  @PutMapping(LESSON_API_V1 + "/{lessonId}")
   @ResponseStatus(HttpStatus.OK)
-  void updateLesson(@Valid @RequestBody UpdateLessonRequestDto updateLessonRequestDto);
+  void updateLesson(
+      @PathVariable @NotNull Integer lessonId,
+      @Valid @RequestBody UpdateLessonRequestDto updateLessonRequestDto);
 
   @GetMapping(LESSON_API_V1 + "/course/{courseId}")
   @ResponseStatus(HttpStatus.OK)

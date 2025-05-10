@@ -24,8 +24,8 @@ public class LessonMapper {
     return lessonEntity;
   }
 
-  public LessonEntity mapToLessonEntity(UpdateLessonRequestDto updateLessonRequestDto) {
-    LessonEntity lessonEntity = new LessonEntity();
+  public LessonEntity mapToLessonEntity(
+      LessonEntity lessonEntity, UpdateLessonRequestDto updateLessonRequestDto) {
     lessonEntity.setType(LessonType.valueOf(updateLessonRequestDto.getLessonType().name()));
     lessonEntity.setCreated(Date.valueOf(LocalDate.now()));
     lessonEntity.setContent(updateLessonRequestDto.getContent());

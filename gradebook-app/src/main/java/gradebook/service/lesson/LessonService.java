@@ -8,7 +8,7 @@ import java.util.List;
 public interface LessonService {
   void createLesson(CreateLessonRequestDto createLessonRequestDto);
 
-  void updateLesson(UpdateLessonRequestDto updateLessonRequestDto);
+  void updateLesson(Integer lessonId, UpdateLessonRequestDto updateLessonRequestDto);
 
   List<LessonResponseDto> getLessons(Integer id);
 

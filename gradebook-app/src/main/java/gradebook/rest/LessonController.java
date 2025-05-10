@@ -20,8 +20,8 @@ public class LessonController implements LessonApi {
   }
 
   @Override
-  public void updateLesson(UpdateLessonRequestDto updateLessonRequestDto) {
-    lessonService.updateLesson(updateLessonRequestDto);
+  public void updateLesson(Integer lessonId, UpdateLessonRequestDto updateLessonRequestDto) {
+    lessonService.updateLesson(lessonId, updateLessonRequestDto);
   }
 
   @Override

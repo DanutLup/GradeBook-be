@@ -41,14 +41,12 @@ public class LessonServiceImpl implements LessonService {
 
   @Transactional
   @Override
-  public void updateLesson(UpdateLessonRequestDto updateLessonRequestDto) {
-    LessonEntity lessonEntity = LessonMapper.mapToLessonEntity(updateLessonRequestDto);
-    CourseEntity course =
-        courseRepository
-            .findById(updateLessonRequestDto.getCourseId())
-            .orElseThrow(() -> new LessonNotFoundException("Course not found"));
-    lessonEntity.setCourse(course);
-
+  public void updateLesson(Integer lessonId, UpdateLessonRequestDto updateLessonRequestDto) {
+    LessonEntity lessonEntity =
+        lessonRepository
+            .findById(lessonId)
+            .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
+    LessonMapper.mapToLessonEntity(lessonEntity, updateLessonRequestDto);
     lessonRepository.saveAndFlush(lessonEntity);
   }
 
