@@ -57,6 +57,7 @@ public class UserController implements UserApi {
   @Override
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
+    log.info("Received request to update user {}", userUpdateRequestDto);
     userService.updateUser(userUpdateRequestDto);
   }
 

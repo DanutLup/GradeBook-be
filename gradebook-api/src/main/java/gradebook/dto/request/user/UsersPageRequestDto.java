@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class UsersPageRequestDto {
   private int pageNumber;
   private int pageSize;
+  private String userName;
   private UserRoleDto role;
 }

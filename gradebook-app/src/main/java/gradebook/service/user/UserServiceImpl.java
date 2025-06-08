@@ -8,6 +8,7 @@ import gradebook.dto.user.*;
 import gradebook.exception.UserException;
 import gradebook.repository.db.*;
 import gradebook.repository.db.data.*;
+import io.micrometer.common.util.StringUtils;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +65,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
     UserEntity userEntity = userRepository.findById(userUpdateRequestDto.getId()).orElseThrow();
 
@@ -124,28 +127,6 @@ public class UserServiceImpl implements UserService {
     enrollmentRepository.save(enrollmentEntity);
   }
 
-  //  @Override
-  //  public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
-  //    UserEntity userEntity =
-  //        userRepository
-  //            .findByEmail(userLoginRequestDto.getEmail())
-  //            .orElseThrow(() -> new UserException("User Not found"));
-  //    if (userEntity.getPassword().equals(userLoginRequestDto.getPassword())) {
-  //      log.info("Login successful");
-  //
-  //      return UserLoginResponseDto.builder()
-  //          .id(userEntity.getId())
-  //          .email(userEntity.getEmail())
-  //          .role(UserRoleDto.valueOf(userEntity.getRole().name()))
-  //          .firstName(userEntity.getFirstName())
-  //          .lastName(userEntity.getLastName())
-  //          .build();
-  //    } else {
-  //      log.error("Incorrect password");
-  //      throw new UserException("Incorrect password");
-  //    }
-  //  }
-
   @Override
   public UserStatisticsResponseDto getUserStatistics() {
     Pageable pageable = PageRequest.of(0, 200);
@@ -169,9 +150,9 @@ public class UserServiceImpl implements UserService {
         PageRequest.of(usersPageRequestDto.getPageNumber(), usersPageRequestDto.getPageSize());
 
     if (usersPageRequestDto.getRole().equals(UserRoleDto.STUDENT)) {
-      return getStudentsPageResponseDto(pageable);
+      return getStudentsPageResponseDto(usersPageRequestDto.getUserName(), pageable);
     } else if (usersPageRequestDto.getRole().equals(UserRoleDto.TEACHER)) {
-      return getTeacherPageResponseDto(pageable);
+      return getTeacherPageResponseDto(usersPageRequestDto.getUserName(), pageable);
     }
     return getUsersPageResponseDto(pageable);
   }
@@ -182,15 +163,28 @@ public class UserServiceImpl implements UserService {
     return UsersPageResponseDto.builder().users(usersResponse).build();
   }
 
-  private UsersPageResponseDto getTeacherPageResponseDto(Pageable pageable) {
-    Page<TeacherEntity> teachers = teacherRepository.findAll(pageable);
-
+  private UsersPageResponseDto getTeacherPageResponseDto(String userName, Pageable pageable) {
+    Page<TeacherEntity> teachers;
+    if (!StringUtils.isBlank(userName)) {
+      Specification<TeacherEntity> studentSpecification =
+          UserCriteriaBuilder.nameMatchesPrefixForTeacher(userName);
+      teachers = teacherRepository.findAll(studentSpecification, pageable);
+    } else {
+      teachers = teacherRepository.findAll(pageable);
+    }
     Page<UserResponseDto> teachersResponse = teachers.map(UserServiceImpl::toUserResponseDto);
     return UsersPageResponseDto.builder().users(teachersResponse).build();
   }
 
-  private UsersPageResponseDto getStudentsPageResponseDto(Pageable pageable) {
-    Page<StudentEntity> students = studentRepository.findAll(pageable);
+  private UsersPageResponseDto getStudentsPageResponseDto(String userName, Pageable pageable) {
+    Page<StudentEntity> students;
+    if (!StringUtils.isBlank(userName)) {
+      Specification<StudentEntity> studentSpecification =
+          UserCriteriaBuilder.nameMatchesPrefixForStudent(userName);
+      students = studentRepository.findAll(studentSpecification, pageable);
+    } else {
+      students = studentRepository.findAll(pageable);
+    }
     Page<UserResponseDto> studentsResponse = students.map(UserServiceImpl::toUserResponseDto);
     return UsersPageResponseDto.builder().users(studentsResponse).build();
   }

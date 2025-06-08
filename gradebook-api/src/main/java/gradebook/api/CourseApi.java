@@ -20,8 +20,7 @@ public interface CourseApi {
   void createCourse(@RequestBody CourseRequestDto courseRequestDto);
 
   @GetMapping("/get-courses")
-  @ResponseStatus(HttpStatus.OK)
-  CoursesResponseDto getCourses();
+  CoursesResponseDto getCourses(@RequestParam(required = false) String courseName);
 
   @GetMapping("/get-course/{id}")
   @ResponseStatus(HttpStatus.OK)

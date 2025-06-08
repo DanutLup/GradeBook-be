@@ -11,6 +11,7 @@ import gradebook.repository.db.data.CourseEntity;
 import gradebook.repository.db.data.EnrollmentEntity;
 import gradebook.repository.db.data.StudentEntity;
 import gradebook.repository.db.data.TeacherEntity;
+import io.micrometer.common.util.StringUtils;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +68,13 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public CoursesResponseDto getCourses() {
-    List<CourseEntity> courses = courseRepository.findAll();
+  public CoursesResponseDto getCourses(String courseName) {
+    List<CourseEntity> courses;
+    if (StringUtils.isNotBlank(courseName)) {
+      courses = courseRepository.findByNameContainingIgnoreCase(courseName);
+    } else {
+      courses = courseRepository.findAll();
+    }
     return getCoursesResponseDto(courses.stream().map(CourseMapper::getCourseResponseDto));
   }
 

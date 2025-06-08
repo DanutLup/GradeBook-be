@@ -11,7 +11,7 @@ public interface CourseService {
 
   void createCourse(CourseRequestDto courseRequestDto);
 
-  CoursesResponseDto getCourses();
+  CoursesResponseDto getCourses(String courseName);
 
   void updateCourse(CourseRequestDto courseRequestDto);
 

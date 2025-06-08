@@ -29,8 +29,8 @@ public class CourseController implements CourseApi {
   }
 
   @Override
-  public CoursesResponseDto getCourses() {
-    return courseService.getCourses();
+  public CoursesResponseDto getCourses(String courseName) {
+    return courseService.getCourses(courseName);
   }
 
   @Override
