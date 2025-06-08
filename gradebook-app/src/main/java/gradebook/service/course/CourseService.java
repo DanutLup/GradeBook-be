@@ -5,7 +5,7 @@ import gradebook.dto.response.course.CourseResponseDto;
 import gradebook.dto.response.course.CoursesResponseDto;
 
 public interface CourseService {
-  CoursesResponseDto getCoursesForTeacher(int id);
+  CoursesResponseDto getCoursesForTeacher(int id, String courseName);
 
   CoursesResponseDto getCoursesForStudent(int id);
 

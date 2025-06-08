@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 public interface CourseApi {
   @GetMapping("/get-courses-for-teacher/{id}")
   @ResponseStatus(HttpStatus.OK)
-  CoursesResponseDto getCoursesForTeacher(@PathVariable int id);
+  CoursesResponseDto getCoursesForTeacher(
+      @PathVariable int id, @RequestParam(required = false) String courseName);
 
   @GetMapping("/get-courses-for-student/{id}")
   @ResponseStatus(HttpStatus.OK)

@@ -27,9 +27,19 @@ public class CourseServiceImpl implements CourseService {
   private final StudentRepository studentRepository;
 
   @Override
-  public CoursesResponseDto getCoursesForTeacher(int id) {
+  public CoursesResponseDto getCoursesForTeacher(int id, String courseName) {
     TeacherEntity teacher = teacherRepository.findById(id).orElseThrow();
     List<CourseEntity> courses = teacher.getCourses();
+    if (StringUtils.isNotBlank(courseName)) {
+      List<CourseEntity> filteredCourses =
+          courses.stream()
+              .filter(
+                  courseEntity ->
+                      courseEntity.getName().toLowerCase().contains(courseName.toLowerCase()))
+              .toList();
+      return getCoursesResponseDto(
+          filteredCourses.stream().map(getCourseEntityCourseForTeacherResponseDto()));
+    }
 
     return getCoursesResponseDto(
         courses.stream().map(getCourseEntityCourseForTeacherResponseDto()));
@@ -79,6 +89,7 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
+  @Transactional
   public void updateCourse(CourseRequestDto courseRequestDto) {
     CourseEntity courseEntity =
         courseRepository
