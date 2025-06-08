@@ -1,7 +1,6 @@
 package gradebook.service.user;
 
 import gradebook.dto.request.user.*;
-import gradebook.dto.response.user.UserLoginResponseDto;
 import gradebook.dto.response.user.UserResponseDto;
 import gradebook.dto.response.user.UserStatisticsResponseDto;
 import gradebook.dto.response.user.UsersPageResponseDto;
@@ -125,27 +124,27 @@ public class UserServiceImpl implements UserService {
     enrollmentRepository.save(enrollmentEntity);
   }
 
-  @Override
-  public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
-    UserEntity userEntity =
-        userRepository
-            .findByEmail(userLoginRequestDto.getEmail())
-            .orElseThrow(() -> new UserException("User Not found"));
-    if (userEntity.getPassword().equals(userLoginRequestDto.getPassword())) {
-      log.info("Login successful");
-
-      return UserLoginResponseDto.builder()
-          .id(userEntity.getId())
-          .email(userEntity.getEmail())
-          .role(UserRoleDto.valueOf(userEntity.getRole().name()))
-          .firstName(userEntity.getFirstName())
-          .lastName(userEntity.getLastName())
-          .build();
-    } else {
-      log.error("Incorrect password");
-      throw new UserException("Incorrect password");
-    }
-  }
+  //  @Override
+  //  public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
+  //    UserEntity userEntity =
+  //        userRepository
+  //            .findByEmail(userLoginRequestDto.getEmail())
+  //            .orElseThrow(() -> new UserException("User Not found"));
+  //    if (userEntity.getPassword().equals(userLoginRequestDto.getPassword())) {
+  //      log.info("Login successful");
+  //
+  //      return UserLoginResponseDto.builder()
+  //          .id(userEntity.getId())
+  //          .email(userEntity.getEmail())
+  //          .role(UserRoleDto.valueOf(userEntity.getRole().name()))
+  //          .firstName(userEntity.getFirstName())
+  //          .lastName(userEntity.getLastName())
+  //          .build();
+  //    } else {
+  //      log.error("Incorrect password");
+  //      throw new UserException("Incorrect password");
+  //    }
+  //  }
 
   @Override
   public UserStatisticsResponseDto getUserStatistics() {

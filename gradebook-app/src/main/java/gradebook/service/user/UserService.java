@@ -1,13 +1,12 @@
 package gradebook.service.user;
 
 import gradebook.dto.request.user.*;
-import gradebook.dto.response.user.UserLoginResponseDto;
 import gradebook.dto.response.user.UserResponseDto;
 import gradebook.dto.response.user.UserStatisticsResponseDto;
 import gradebook.dto.response.user.UsersPageResponseDto;
 
 public interface UserService {
-  UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);
+  //  UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto);
 
   UserStatisticsResponseDto getUserStatistics();
 
