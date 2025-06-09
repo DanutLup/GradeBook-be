@@ -64,6 +64,12 @@ public class LessonServiceImpl implements LessonService {
     lessonRepository.deleteById(lessonId);
   }
 
+  @Override
+  public LessonResponseDto getLesson(Integer lessonId) {
+    LessonEntity lessonEntity = lessonRepository.findById(lessonId).orElseThrow();
+    return LessonMapper.mapToLessonResponseDto(lessonEntity);
+  }
+
   private boolean isTeacherOwnerOfTheCourse(Integer requestCourseId, TeacherEntity teacherEntity) {
     return teacherEntity.getCourses().stream()
         .map(CourseEntity::getId)

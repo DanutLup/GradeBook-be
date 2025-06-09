@@ -38,13 +38,14 @@ public class LessonMapper {
     return lessons.stream().map(LessonMapper::mapToLessonResponseDto).toList();
   }
 
-  private static LessonResponseDto mapToLessonResponseDto(LessonEntity lessonEntity) {
+  public LessonResponseDto mapToLessonResponseDto(LessonEntity lessonEntity) {
     return LessonResponseDto.builder()
         .lessonType(LessonTypeDto.valueOf(lessonEntity.getType().name()))
         .title(lessonEntity.getTitle())
         .description(lessonEntity.getDescription())
         .content(lessonEntity.getContent())
         .lessonId(lessonEntity.getId())
+        .courseId(lessonEntity.getCourse().getId())
         .build();
   }
 }

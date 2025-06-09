@@ -25,6 +25,11 @@ public class LessonController implements LessonApi {
   }
 
   @Override
+  public LessonResponseDto getLesson(Integer lessonId) {
+    return lessonService.getLesson(lessonId);
+  }
+
+  @Override
   public List<LessonResponseDto> getLessons(Integer courseId) {
     return lessonService.getLessons(courseId);
   }

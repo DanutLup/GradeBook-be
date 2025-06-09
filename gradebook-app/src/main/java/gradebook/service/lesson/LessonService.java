@@ -13,4 +13,6 @@ public interface LessonService {
   List<LessonResponseDto> getLessons(Integer id);
 
   void deleteLesson(Integer lessonId);
+
+  LessonResponseDto getLesson(Integer lessonId);
 }

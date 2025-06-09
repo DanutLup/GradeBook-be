@@ -22,6 +22,10 @@ public interface LessonApi {
       @PathVariable @NotNull Integer lessonId,
       @Valid @RequestBody UpdateLessonRequestDto updateLessonRequestDto);
 
+  @GetMapping(LESSON_API_V1 + "/{lessonId}")
+  @ResponseStatus(HttpStatus.OK)
+  LessonResponseDto getLesson(@PathVariable @NotNull Integer lessonId);
+
   @GetMapping(LESSON_API_V1 + "/course/{courseId}")
   @ResponseStatus(HttpStatus.OK)
   List<LessonResponseDto> getLessons(@PathVariable Integer courseId);

@@ -16,4 +16,5 @@ public class LessonResponseDto {
   private LessonTypeDto lessonType;
   private String content;
   private Integer lessonId;
+  private Integer courseId;
 }
