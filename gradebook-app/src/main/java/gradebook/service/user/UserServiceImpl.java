@@ -32,12 +32,13 @@ public class UserServiceImpl implements UserService {
   private final StudentRepository studentRepository;
 
   @Override
+  @Transactional
   public void deleteUser(UserDeleteRequestDto userDeleteRequestDto) {
     if (userDeleteRequestDto.getRole().equals(UserRoleDto.TEACHER)) {
       TeacherEntity teacherEntity =
           teacherRepository.findById(userDeleteRequestDto.getUserId()).orElseThrow();
       if (!teacherEntity.getCourses().isEmpty()) {
-        throw new UserException("Please assign another teacher to the courses");
+        throw new UserException("Profesorul nu poate fi șters deoarece încă are cursuri asignate");
       }
       teacherRepository.deleteById(userDeleteRequestDto.getUserId());
     } else if (userDeleteRequestDto.getRole().equals(UserRoleDto.STUDENT)) {
@@ -81,15 +82,15 @@ public class UserServiceImpl implements UserService {
     CourseEntity courseEntity =
         courseRepository
             .findById(enrollmentRequestDto.getCourseId())
-            .orElseThrow(() -> new UserException("Course not found"));
+            .orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
     StudentEntity studentEntity =
         studentRepository
             .findById(enrollmentRequestDto.getStudentId())
-            .orElseThrow(() -> new UserException("Student not found"));
+            .orElseThrow(() -> new UserException("Studentul nu a fost găsit"));
     if (enrollmentRepository
         .findByStudentIdAndCourseId(studentEntity.getId(), courseEntity.getId())
         .isPresent()) {
-      throw new UserException("The student is already enrolled to this course");
+      throw new UserException("Studentul este deja înrolat la acest curs");
     }
 
     EnrollmentEntity enrollmentEntity =
@@ -108,20 +109,21 @@ public class UserServiceImpl implements UserService {
     EnrollmentEntity enrollmentEntity =
         enrollmentRepository
             .findByStudentIdAndCourseId(studentId, courseId)
-            .orElseThrow(() -> new UserException("Enrollment not found"));
+            .orElseThrow(() -> new UserException("Înrolarea nu a fost găsită"));
 
     enrollmentRepository.delete(enrollmentEntity);
   }
 
   @Override
+  @Transactional
   public void editGrade(EnrollmentRequestDto enrollmentRequestDto) {
     EnrollmentEntity enrollmentEntity =
         enrollmentRepository
             .findByStudentIdAndCourseId(
                 enrollmentRequestDto.getStudentId(), enrollmentRequestDto.getCourseId())
-            .orElseThrow(() -> new UserException("Enrollment not found"));
+            .orElseThrow(() -> new UserException("Înrolarea nu a fost găsită"));
     if (enrollmentRequestDto.getGrade() < 1 || enrollmentRequestDto.getGrade() > 10) {
-      throw new UserException("Please enter a value between 1 and 10");
+      throw new UserException("Nota trebuie sa aibă o valoare cuprinsă între 1 și 10");
     }
     enrollmentEntity.setGrade(enrollmentRequestDto.getGrade());
     enrollmentRepository.save(enrollmentEntity);
@@ -203,7 +205,7 @@ public class UserServiceImpl implements UserService {
     Optional<UserEntity> userEntity = userRepository.findByCnp(userCreateRequestDto.getCnp());
     if (userEntity.isPresent()) {
       throw new UserException(
-          String.format("User with CNP: %s already exists", userCreateRequestDto.getCnp()));
+          String.format("Utilizatorul cu CNP: %s deja există", userCreateRequestDto.getCnp()));
     }
   }
 
@@ -211,7 +213,7 @@ public class UserServiceImpl implements UserService {
     Optional<UserEntity> userEntity = userRepository.findByEmail(userCreateRequestDto.getEmail());
     if (userEntity.isPresent()) {
       throw new UserException(
-          String.format("User with email %s already exists!", userCreateRequestDto.getEmail()));
+          String.format("Utilizatorul cu emailul %s deja există!", userCreateRequestDto.getEmail()));
     }
   }
 

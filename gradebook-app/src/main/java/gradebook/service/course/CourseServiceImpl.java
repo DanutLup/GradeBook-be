@@ -25,6 +25,7 @@ public class CourseServiceImpl implements CourseService {
   private final CourseRepository courseRepository;
   private final TeacherRepository teacherRepository;
   private final StudentRepository studentRepository;
+  private final EnrollmentRepository enrollmentRepository;
 
   @Override
   public CoursesResponseDto getCoursesForTeacher(int id, String courseName) {
@@ -67,7 +68,7 @@ public class CourseServiceImpl implements CourseService {
     TeacherEntity teacher =
         teacherRepository
             .findById(courseRequestDto.getTeacherId())
-            .orElseThrow(() -> new UserException("teacher not found"));
+            .orElseThrow(() -> new UserException("Profesorul nu a fost găsit"));
     CourseEntity courseEntity =
         CourseEntity.builder()
             .credits(courseRequestDto.getCredits())
@@ -94,11 +95,11 @@ public class CourseServiceImpl implements CourseService {
     CourseEntity courseEntity =
         courseRepository
             .findById(courseRequestDto.getCourseId())
-            .orElseThrow(() -> new UserException("Course not found"));
+            .orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
     TeacherEntity teacher =
         teacherRepository
             .findById(courseRequestDto.getTeacherId())
-            .orElseThrow(() -> new UserException("Teacher not found"));
+            .orElseThrow(() -> new UserException("Profesorul nu a fost găsit"));
 
     courseEntity.setCredits(courseRequestDto.getCredits());
     courseEntity.setName(courseRequestDto.getName());
@@ -108,19 +109,23 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
+  @Transactional
   public void deleteCourse(int courseId) {
     CourseEntity courseEntity =
         courseRepository
             .findById(courseId)
-            .orElseThrow(() -> new UserException("Course not found"));
+            .orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
 
+    courseEntity.setTeacher(null);
+    var enrollments = courseEntity.getEnrollmentEntities();
+    enrollmentRepository.deleteAll(enrollments);
     courseRepository.delete(courseEntity);
   }
 
   @Override
   public CourseResponseDto getCourse(int id) {
     CourseEntity courseEntity =
-        courseRepository.findById(id).orElseThrow(() -> new UserException("Course not found"));
+        courseRepository.findById(id).orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
 
     CourseResponseDto courseResponseDto = getCourseResponseDto(courseEntity);
     List<StudentEntity> students =

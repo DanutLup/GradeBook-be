@@ -26,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     var user =
         userRepository
             .findByEmail(request.getEmail())
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit"));
 
     Map<String, Object> extraClaims =
         Map.of(

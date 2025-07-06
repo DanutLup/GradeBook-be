@@ -50,7 +50,7 @@ public class CourseMapper {
             studentEntity.getEnrollmentEntities().stream()
                 .filter(enrollment -> enrollment.getCourse().equals(courseEntity))
                 .findFirst()
-                .orElseThrow(() -> new UserException("enrollment not found"))
+                .orElseThrow(() -> new UserException("Înrolarea nu a fost găsită"))
                 .getGrade())
         .build();
   }

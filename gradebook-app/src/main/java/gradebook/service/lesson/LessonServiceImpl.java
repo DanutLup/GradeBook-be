@@ -33,7 +33,7 @@ public class LessonServiceImpl implements LessonService {
     CourseEntity course =
         courseRepository
             .findById(createLessonRequestDto.getCourseId())
-            .orElseThrow(() -> new LessonNotFoundException("Course not found"));
+            .orElseThrow(() -> new LessonNotFoundException("Cursul nu a fost găsit"));
     lessonEntity.setCourse(course);
 
     lessonRepository.saveAndFlush(lessonEntity);
@@ -45,7 +45,7 @@ public class LessonServiceImpl implements LessonService {
     LessonEntity lessonEntity =
         lessonRepository
             .findById(lessonId)
-            .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
+            .orElseThrow(() -> new LessonNotFoundException("Lecția nu a fost găsită"));
     LessonMapper.mapToLessonEntity(lessonEntity, updateLessonRequestDto);
     lessonRepository.saveAndFlush(lessonEntity);
   }
@@ -80,9 +80,9 @@ public class LessonServiceImpl implements LessonService {
     TeacherEntity teacherEntity =
         teacherRepository
             .findById(createLessonRequestDto.getTeacherId())
-            .orElseThrow(() -> new UserNotFoundException("Teacher not found"));
+            .orElseThrow(() -> new UserNotFoundException("Profesorul nu a fost găsit"));
     if (!isTeacherOwnerOfTheCourse(createLessonRequestDto.getCourseId(), teacherEntity)) {
-      throw new TeacherUnauthorizedException("Teacher is not owner of this course");
+      throw new TeacherUnauthorizedException("Profesorul nu are dreptul de a crea lecții la acest curs");
     }
   }
 }
