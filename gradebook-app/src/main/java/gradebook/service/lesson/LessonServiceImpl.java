@@ -82,7 +82,8 @@ public class LessonServiceImpl implements LessonService {
             .findById(createLessonRequestDto.getTeacherId())
             .orElseThrow(() -> new UserNotFoundException("Profesorul nu a fost găsit"));
     if (!isTeacherOwnerOfTheCourse(createLessonRequestDto.getCourseId(), teacherEntity)) {
-      throw new TeacherUnauthorizedException("Profesorul nu are dreptul de a crea lecții la acest curs");
+      throw new TeacherUnauthorizedException(
+          "Profesorul nu are dreptul de a crea lecții la acest curs");
     }
   }
 }

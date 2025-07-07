@@ -213,7 +213,8 @@ public class UserServiceImpl implements UserService {
     Optional<UserEntity> userEntity = userRepository.findByEmail(userCreateRequestDto.getEmail());
     if (userEntity.isPresent()) {
       throw new UserException(
-          String.format("Utilizatorul cu emailul %s deja există!", userCreateRequestDto.getEmail()));
+          String.format(
+              "Utilizatorul cu emailul %s deja există!", userCreateRequestDto.getEmail()));
     }
   }
 

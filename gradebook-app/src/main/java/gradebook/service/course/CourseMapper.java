@@ -32,6 +32,7 @@ public class CourseMapper {
         .credits(courseEntity.getCredits())
         .name(courseEntity.getName())
         .teacher(getTeacherName(courseEntity))
+        .teacherId(courseEntity.getTeacher().getId())
         .build();
   }
 

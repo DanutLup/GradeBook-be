@@ -16,6 +16,7 @@ public class CourseResponseDto {
   private String name;
   private int credits;
   private String teacher;
+  private int teacherId;
   private int grade;
   private List<StudentResponseDto> students;
 }

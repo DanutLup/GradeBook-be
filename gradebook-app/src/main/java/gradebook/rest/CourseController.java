@@ -6,10 +6,12 @@ import gradebook.dto.response.course.CourseResponseDto;
 import gradebook.dto.response.course.CoursesResponseDto;
 import gradebook.service.course.CourseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CourseController implements CourseApi {
   private final CourseService courseService;
 
@@ -40,6 +42,7 @@ public class CourseController implements CourseApi {
 
   @Override
   public void updateCourse(CourseRequestDto courseRequestDto) {
+    log.info("Received request to updateCourse: {}", courseRequestDto);
     courseService.updateCourse(courseRequestDto);
   }
 

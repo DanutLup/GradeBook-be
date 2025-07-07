@@ -125,7 +125,9 @@ public class CourseServiceImpl implements CourseService {
   @Override
   public CourseResponseDto getCourse(int id) {
     CourseEntity courseEntity =
-        courseRepository.findById(id).orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
+        courseRepository
+            .findById(id)
+            .orElseThrow(() -> new UserException("Cursul nu a fost găsit"));
 
     CourseResponseDto courseResponseDto = getCourseResponseDto(courseEntity);
     List<StudentEntity> students =
